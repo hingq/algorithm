@@ -1,0 +1,95 @@
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  --vt-c-white: #fff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+
+  --vt-c-blue: #336378;
+
+  --vt-c-black: rgb(24 ,24 ,24);
+  --vt-c-black-soft: #222222;
+  --vt-c-black-mute: #421e1e;
+
+  --vt-c-indigo: #2c3e50;
+
+  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  --vt-c-boderColor: #c4c6c9;
+  /* dark #414243 */
+
+  --vt-c-card: rgb(51, 102, 153, 90%);
+  /* #336699 */
+  --vt-c-text-light-1: var(--vt-c-indigo);
+  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-dark-1: var(--vt-c-white);
+  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-table-background:#edf2f6
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-dark: var(--vt-c-black);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+  --color-borderColor: var(--vt-c-boderColor);
+  --color-border: var(--vt-c-divider-light-2);
+  --color-border-hover: var(--vt-c-divider-light-1);
+
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
+
+  --section-gap: 160px;
+  --color-card: var(--vt-c-card);
+  --color-table-background:var(--vt-c-table-background);
+  --color-table-background-hover:#fff;
+  --color-classTable:#DEEDF7;
+  --c0lor-class-border:#ddd;
+  --color-class-background:'#94aef3',
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+html {
+  overflow: scroll;
+  
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  /* dark:#121212 */
+  transition:
+  background-color 0.2s ease;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* @font-face {
+  font-family: font-cxscrect;
+  src: url('E:/sys/ed_management_system/manage_go/public/font.ttf');
+} */
