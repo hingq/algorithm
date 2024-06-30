@@ -232,6 +232,7 @@ var rowspanfunc = (index) => {
                     </td>
 
                     <template v-for="i in item.day" :key="i">
+                        <!-- rowspan 设置跨行数 -->
                         <td :rowspan="rowspanfunc(index)" v-if="i.startTime">
                             <div class="card">
                                 <p>{{ ` ${i.startTime}---${i.endTime} ` }}</p>

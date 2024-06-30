@@ -31,7 +31,7 @@ const toUrl = (key, url) => {
 </script>
 
 <template>
-    <button class="nav-btn open-btn">change</button>
+    <button class="nav-btn open-btn">cilck</button>
     <div>
         <div class=" nav nav-black">
             <div class="nav nav-red">

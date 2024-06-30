@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/layout',
+      redirect: '/algorithm',
       name:'persal'
     },
     {
