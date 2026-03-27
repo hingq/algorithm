@@ -93,6 +93,10 @@ const router = createRouter({
           path:'binary',
           component:()=>import('@/components/algorithm/binary.vue')
         },
+        {
+          path:'search',
+          component:()=>import('@/components/algorithm/search.vue')
+        },
       ]
     },
     {

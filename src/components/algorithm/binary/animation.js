@@ -1,5 +1,3 @@
-import { getRandomColor } from "@/util/randomColor"
-
 // 节点属性
 const attr = {
     color: [],
@@ -31,8 +29,6 @@ export const createCircle = (ctx, node, x, y) => {
 
 export const line = (ctx, x1, y1, x2, y2,progress) => {
     ctx.lineWidth = lineAttr.width;
-    const color=getRandomColor()
-
     ctx.beginPath();
     const currentX = x1 + (x2 - x1) * progress;
     const currentY = y1 + (y2 - y1) * progress;

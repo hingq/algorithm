@@ -1,11 +1,9 @@
 <script setup>
 import { onMounted,ref } from 'vue';
 import algorithm from './algorithm.vue';
-import { import_ } from './async_import';
 import { init } from '@/components/algorithm/binary';
 const canvas=ref('')
 
-import_()
 onMounted (()=>{
 
     init(canvas.value.$el.querySelector('#canvas_container canvas'))
@@ -17,7 +15,7 @@ onMounted (()=>{
 <template>
     <algorithm ref="canvas">
         <template #header>
-            sahduasd
+            二叉搜索树构建动画
         </template>
         <template #body>
             <TransitionGroup name="list">
