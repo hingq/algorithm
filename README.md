@@ -18,5 +18,6 @@
 2. 也可以在 Actions 页面手动触发 `Deploy to GitHub Pages`。
 3. 页面地址通常为：`https://<你的用户名>.github.io/<仓库名>/`。
 4. 在仓库 `Settings -> Pages` 中，将 `Build and deployment` 的 `Source` 设为 **GitHub Actions**。
+5. 工作流内已开启 `actions/configure-pages` 的自动启用参数；若首次部署仍报 `Get Pages site failed`，请先在仓库设置页手动启用一次 Pages 后重试。
 
 > 若仓库默认分支不是 `main`，请修改 `.github/workflows/deploy-pages.yml` 中的分支配置。
