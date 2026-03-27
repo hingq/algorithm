@@ -8,7 +8,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 // import Inspect from 'vite-plugin-inspect'
 // https://vitejs.dev/config/
+
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1]
+
 export default defineConfig({
+  base: process.env.GITHUB_ACTIONS && repoName ? `/${repoName}/` : '/',
   plugins: [
     vue(),
 
@@ -21,28 +25,27 @@ export default defineConfig({
           prefix: 'Icon',
         }),
       ],
-      imports:['vue','vue-router'] , //自动引入相关函数
+      imports: ['vue', 'vue-router'], // 自动引入相关函数
     }),
 
     Components({
       resolvers: [
-        ElementPlusResolver(), //自动导入组件
+        ElementPlusResolver(), // 自动导入组件
         IconsResolver({
           enabledCollections: ['ep'],
         }),
       ],
-      
     }),
-    
+
     Icons({
       autoInstall: true,
-      compiler:'vue3'
+      compiler: 'vue3',
     }),
     // Inspect(),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })
