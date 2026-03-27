@@ -9,13 +9,6 @@ class TreeNode {
         this.color = getRandomColor() //随机颜色
     }
 }
-// 节点属性
-const attr = {
-    color: [],
-    size: 50,
-
-}
-
 var nodes = []
 let animationQuene = []
 let index = 0;
@@ -60,21 +53,6 @@ const draw = (ctx) => {
         }, 500);
     }
 }
-// 保存已绘制的节点和线条
-let previousNodes = [];
-const drawPreviousNodes = (ctx) => {
-    ctx.clearRect(0,0,1400,1400)
-    for (const item of previousNodes) {
-        if (item.p_x !== null && item.p_y !== null) {
-            ctx.beginPath();
-            ctx.moveTo(item.p_x, item.p_y+attr.size);
-            ctx.lineTo(item.x, item.y);
-            ctx.strokeStyle = 'black';
-            ctx.stroke();
-        }
-        createCircle(ctx, item.node, item.x, item.y);
-    }
-};
 const initAnimatinQueue = (node, x, y, level, p_x = null, p_y = null) => {
     if (!node) return;
     enqueue(node, x, y, p_x, p_y)
@@ -100,38 +78,16 @@ nodes[2].right = nodes[6];
 
 export const init = (node) => {
     const ctx = node.getContext('2d');
+    animationQuene = []
+    index = 0
     node.width = 700 * 2
     node.height = 500 * 2
     node.style.width = 700 + "px";
     node.style.height = 500 + "px";
     // 绘制二叉树
+    ctx.clearRect(0, 0, node.width, node.height)
     initAnimatinQueue(nodes[0], 700, 150, 0);
-    previousNodes = [...animationQuene]
     draw(ctx);
     // drawCircle(ctx)
     // line(ctx)
-}
-//每个新产生的节点初始位置
-const drawCircle = (ctx) => {
-    const r = attr.size;
-    ctx.beginPath();
-    ctx.arc(150, 150, r, 0, 2 * Math.PI);
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.strokeStyle = 'black';
-    ctx.stroke();
-    insertBinary(r, 5);
-}
-
-// 插入节点
-function insertBinary(root, value) {
-    if (!root) return new TreeNode(value);
-
-    if (value < root.value) {
-        root.left = insertBinary(root.left, value);
-    } else {
-        root.right = insertBinary(root.right, value);
-    }
-
-    return root;
 }

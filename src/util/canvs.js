@@ -1,399 +1,316 @@
+const DEFAULT_OPTION = {
+  chatZone: [50, 50, 700, 470],
+  yAxisLabel: ['0', '100', '200', '300', '400'],
+  yMax: 400,
+  xAxisLabel: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  data: [70, 50, 200, 330, 390, 320, 220],
+  barStyle: {
+    width: 50,
+    color: '#3982b4eb',
+    activeColor: '#198148',
+  },
+  animate: {
+    enterDuration: 900,
+    moveDuration: 380,
+  },
+}
 
-const util = {
-    canvas_: null,
-    ctx: null,
-    opt: {
-        chatZone: [50, 50, 700, 470],//绘图区域
-        yAxisLabel: [], //y 轴
-        yMax: 400,//max
-        xAxisLabel: [],
-        data: [],//柱状图数据
-        barStyle: {
-            width: 50, //宽度
-            color: '#3982b4eb'//颜色
+const STYLE = {
+  axisColor: '#353535',
+  font: '18px sans-serif',
+  strokeWidth: 2,
+}
 
-        },
-        animate: {
-            animateDuration: 1500,//ms
-            animateStartTime: 0,
-            switchTime: 100,
-            StartTime: 0,
-        },
-    },
-    style: {
-        fillColor: '#353535',
-        font: '18px',
-        strokeWidth: 4,
-        fillStyleGradient: null,
-        currentColor: '#198148'
-    },
-    rectPosition: [],//记录矩形的位置
-    creatHiDPI: function (canvas) {
-        // 获取ratio
-        const PIXEL_RATIO = (function () {
-            const c = canvas;
-            const ctx = c.getContext("2d");
-            const dpr = window.devicePixelRatio || 1;
-            const bsr = ctx['webkitBackingStorePixelRatio'] ||
-                ctx['mozBackingStorePixelRatio'] ||
-                ctx['msBackingStorePixelRatio'] ||
-                ctx['oBackingStorePixelRatio'] ||
-                ctx['backingStorePixelRatio'] || 1;
+const state = {
+  canvas: null,
+  ctx: null,
+  dpr: 1,
+  option: structuredClone(DEFAULT_OPTION),
+  bars: [],
+  baseLayer: null,
+  rafId: null,
+  insertionCache: null,
+  animationChain: Promise.resolve(),
+}
 
-            return dpr / bsr;
-        })();
-        return PIXEL_RATIO
+const getRatio = (canvas) => {
+  const ctx = canvas.getContext('2d')
+  const dpr = window.devicePixelRatio || 1
+  const bsr =
+    ctx.webkitBackingStorePixelRatio ||
+    ctx.mozBackingStorePixelRatio ||
+    ctx.msBackingStorePixelRatio ||
+    ctx.oBackingStorePixelRatio ||
+    ctx.backingStorePixelRatio ||
+    1
+  return dpr / bsr
+}
+
+const copyOption = () => {
+  state.option = {
+    ...DEFAULT_OPTION,
+    ...state.option,
+    barStyle: {
+      ...DEFAULT_OPTION.barStyle,
+      ...(state.option?.barStyle || {}),
     },
-    clear: function () {
-        parameter.ctx.clearRect(0, 0, this.canvas_.width, this.canvas_.height)
+    animate: {
+      ...DEFAULT_OPTION.animate,
+      ...(state.option?.animate || {}),
+    },
+  }
+}
+
+const clearRaf = () => {
+  if (state.rafId !== null) {
+    cancelAnimationFrame(state.rafId)
+    state.rafId = null
+  }
+}
+
+const buildBarsFromData = (data) => {
+  const { chatZone, xAxisLabel, yMax, barStyle } = state.option
+  const xLength = (chatZone[2] - chatZone[0]) * 0.9
+  const yLength = (chatZone[3] - chatZone[1]) * 0.98
+  const gap = xLength / xAxisLabel.length
+
+  return data.map((value, index) => {
+    const x = Math.floor(chatZone[0] + (index + 1) * gap - barStyle.width / 2 - 12)
+    const height = Math.floor((value / yMax) * yLength)
+    const y = chatZone[3] - height
+
+    return {
+      x,
+      y,
+      width: barStyle.width,
+      height,
+      value,
     }
-}
-const parameter = {
-    ctx: null,
-    yAxisLabel: null,
-    xAxisLabel: null,
-    data: [],
-    opt: {}
+  })
 }
 
-// 代理 及时改变ctx的值
-let handler = {
-    get: function (target, prop) {
-        let ret = Reflect.get(target, prop)
-        if (prop === 'opt') {
-            parameter[prop] = {}
-            return new Proxy(ret, handler)
-        }
-        return target[prop]
-    },
-    set: function (target, prop, v) {
-        if (prop in parameter) {
-            if (prop === 'data') {
-                parameter.data = [...v]
-            }
-            else {
-                Reflect.set(parameter, prop, v)
-            }
-        }
-        return Reflect.set(target, prop, v)
+const drawAxisLayer = () => {
+  const { chatZone, yAxisLabel, xAxisLabel } = state.option
+  const offscreen = document.createElement('canvas')
+  offscreen.width = state.canvas.width
+  offscreen.height = state.canvas.height
+
+  const ctx = offscreen.getContext('2d')
+  ctx.scale(state.dpr, state.dpr)
+  ctx.strokeStyle = STYLE.axisColor
+  ctx.fillStyle = STYLE.axisColor
+  ctx.lineWidth = STYLE.strokeWidth
+  ctx.font = STYLE.font
+
+  ctx.beginPath()
+  ctx.moveTo(chatZone[0], chatZone[1])
+  ctx.lineTo(chatZone[0], chatZone[3])
+  ctx.lineTo(chatZone[2], chatZone[3])
+  ctx.lineTo(chatZone[2], chatZone[1])
+  ctx.stroke()
+
+  const yGap = (chatZone[3] - chatZone[1]) * 0.98 / (yAxisLabel.length - 1)
+  yAxisLabel.forEach((label, i) => {
+    const offset = ctx.measureText(label).width + 20
+    const y = chatZone[3] - i * yGap
+
+    ctx.fillText(label, chatZone[0] - offset, y)
+    if (i > 0) {
+      ctx.beginPath()
+      ctx.moveTo(chatZone[0] - 10, y)
+      ctx.lineTo(chatZone[0], y)
+      ctx.stroke()
     }
+  })
+
+  const xGap = (chatZone[2] - chatZone[0]) * 0.9 / xAxisLabel.length
+  xAxisLabel.forEach((label, i) => {
+    const labelWidth = ctx.measureText(label).width
+    const x = chatZone[0] + (i + 1) * xGap - labelWidth
+
+    ctx.fillText(label, x, chatZone[3] + 20)
+    ctx.beginPath()
+    ctx.moveTo(x + labelWidth / 2, chatZone[3])
+    ctx.lineTo(x + labelWidth / 2, chatZone[3] + 5)
+    ctx.stroke()
+  })
+
+  state.baseLayer = offscreen
 }
 
-const utilProxy = new Proxy(util, handler)
+const render = (bars = state.bars, highlight = []) => {
+  const { ctx, canvas } = state
+  const { barStyle } = state.option
 
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.drawImage(state.baseLayer, 0, 0)
 
-
-
-let { chatZone: z } = util.opt
-
-const { fillColor, font, strokeWidth } = util.style
-// let data = util.opt.data
-//对象是引用类型，data变化，opt.data也会改变
-
-let stopFalg = false
-let { switchTime, StartTime, animateDuration } = util.opt.animate
-let switchData;//保存交换的数据
-let primary = undefined;
-
-// 相减
-function minus(a, b) {
-    return (a - b) / switchTime
+  bars.forEach((bar, idx) => {
+    const active = highlight.includes(idx)
+    ctx.fillStyle = active ? barStyle.activeColor : barStyle.color
+    ctx.fillRect(bar.x, bar.y, bar.width, bar.height)
+  })
 }
 
-// 绘制坐标轴
-const drawAxis = () => {
-    parameter.ctx.strokeWidth = strokeWidth;
-    parameter.ctx.strokeStyle = fillColor;
-    parameter.ctx.moveTo(z[0], z[1]);
-    parameter.ctx.lineTo(z[0], z[3])
-    parameter.ctx.lineTo(z[2], z[3])
-    parameter.ctx.lineTo(z[2], z[1])
-    parameter.ctx.stroke();
+const runAnimation = (duration, update) =>
+  new Promise((resolve) => {
+    clearRaf()
+    const start = performance.now()
+
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1)
+      update(progress)
+
+      if (progress < 1) {
+        state.rafId = requestAnimationFrame(tick)
+      } else {
+        state.rafId = null
+        resolve()
+      }
+    }
+
+    state.rafId = requestAnimationFrame(tick)
+  })
+
+
+const enqueueAnimation = (duration, update) => {
+  state.animationChain = state.animationChain
+    .catch(() => undefined)
+    .then(() => runAnimation(duration, update))
+  return state.animationChain
 }
 
-// 绘制y
-const drawYLabel = () => {
-    let gap = (z[3] - z[1]) * 0.98 / (parameter.yAxisLabel.length - 1)
-    parameter.yAxisLabel.forEach((label, i) => {
-        let off = parameter.ctx.measureText(label).width + 20
-        parameter.ctx.strokeStyle = fillColor
-        parameter.ctx.font = font
-        parameter.ctx.fillStyle = fillColor
-        parameter.ctx.fillText(label, z[0] - off, z[3] - i * gap);
-        if (i > 0) {
-            // 绘制短线
-            parameter.ctx.beginPath()
-            parameter.ctx.strokeStyle = fillColor
-            parameter.ctx.moveTo(z[0] - 10, z[3] - i * gap);
-            parameter.ctx.lineTo(z[0], z[3] - i * gap)
-            parameter.ctx.stroke();
-        }
-    });
-
+const normalizeRange = (i, j) => {
+  if (i <= j) return [i, j]
+  return [j, i]
 }
-//绘制x
-const drawXLabel = () => {
-    let xlabel = parameter.xAxisLabel
-    let gap = (z[2] - z[0]) * 0.9 / xlabel.length
-    xlabel.forEach((label, i) => {
-        let off = parameter.ctx.measureText(label).width;
-        parameter.ctx.strokeStyle = fillColor
-        parameter.ctx.font = font
-        parameter.ctx.fillText(label, z[0] + (i + 1) * gap - off, z[3] + 20)
-        parameter.ctx.beginPath()
-        parameter.ctx.moveTo(z[0] + (i + 1) * gap - off / 2, z[3])
-        parameter.ctx.lineTo(z[0] + (i + 1) * gap - off / 2, z[3] + 5);
-        parameter.ctx.stroke();
-        util.opt.offsetXLabel = off / 2
+
+function init(canvas, customOption = {}) {
+  clearRaf()
+  state.animationChain = Promise.resolve()
+  state.canvas = canvas
+  state.ctx = canvas.getContext('2d')
+  state.dpr = getRatio(canvas)
+  state.option = {
+    ...structuredClone(DEFAULT_OPTION),
+    ...customOption,
+    barStyle: {
+      ...DEFAULT_OPTION.barStyle,
+      ...(customOption.barStyle || {}),
+    },
+    animate: {
+      ...DEFAULT_OPTION.animate,
+      ...(customOption.animate || {}),
+    },
+  }
+  copyOption()
+
+  canvas.width = 700 * state.dpr
+  canvas.height = 500 * state.dpr
+  canvas.style.width = '700px'
+  canvas.style.height = '500px'
+
+  state.ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0)
+  drawAxisLayer()
+
+  state.bars = buildBarsFromData(state.option.data)
+  state.insertionCache = null
+
+  const zeroBars = state.bars.map((bar) => ({ ...bar, y: state.option.chatZone[3], height: 0 }))
+  render(zeroBars)
+
+  enqueueAnimation(state.option.animate.enterDuration, (progress) => {
+    const growBars = state.bars.map((bar) => {
+      const height = Math.floor(bar.height * progress)
+      return {
+        ...bar,
+        height,
+        y: state.option.chatZone[3] - height,
+      }
     })
+    render(growBars)
+  })
 }
-//绘制数据
-
-const drawData = () => {
-    let Xlength = (z[2] - z[0]) * 0.9
-    let Ylength = (z[3] - z[1]) * 0.98
-    let gap = Xlength / util.opt.xAxisLabel.length
-    parameter.data.forEach((item, i) => {
-        let x0 = z[0] + (i + 1) * gap - util.opt.barStyle.width / 2 - util.opt.offsetXLabel
-        let height = item / util.opt.yMax * Ylength
-        let y0 = z[3] - height
-        let width = util.opt.barStyle.width
-        x0 = Math.floor(x0)
-        y0 = Math.floor(y0)
-        height = Math.floor(height)
-        util.rectPosition[i] = { x: x0, y: y0, width: width, height: height }
-        parameter.ctx.fillStyle = util.opt.barStyle.color
-        parameter.ctx.fillRect(x0, y0, width, height)
-    })
-}
-//绘制动画
-let anfunc; //保存requestAnimationFrame的返回值
-let animatefunc = () => {
-    let currentTime = performance.now()
-    let elapsedTime = currentTime - StartTime
-    if (elapsedTime <= animateDuration) {
-        let progress = elapsedTime / animateDuration
-        for (var i = 0; i < parameter.data.length; i++) {
-            parameter.data[i] = util.opt.data[i] * progress
-        }
-    } else {
-        stopFalg = true
-        cancelAnimationFrame(anfunc)
-    }
-    run()
-    if (!stopFalg) {
-        anfunc = requestAnimationFrame(animatefunc)
-    }
-}
-//整合绘制使用的函数
-function drawbase() {
-    drawAxis()
-    drawYLabel()
-    drawXLabel()
-}
-
-const run = () => {
-    util.clear()
-    drawbase()
-    drawData()
-    switchData = [...util.rectPosition]
-    primary = util.rectPosition.map(obj => (obj.x))
-}
-//柱体交换
-let swanimation;
 
 function switchRect(i, j) {
-    return new Promise((resolve) => {
-        let switchFlag = false
-        if (i > j) {
-            i = i ^ j
-            j = i ^ j
-            i = i ^ j
-        }
-        let maxRange = primary[j] //默认i<j
+  return new Promise((resolve) => {
+    if (!state.bars.length || i === j) {
+      resolve()
+      return
+    }
 
-        if (switchFlag) {
-            cancelAnimationFrame(swanimation)
-            resolve();
-        }
-        let dx = minus(switchData[j].x, switchData[i].x)
-        function drawSwitch() {
-            util.clear()
-            if (switchData[i].x <= maxRange) {
-                switchData[i].x = Math.ceil(switchData[i].x + dx)
-                switchData[j].x = Math.floor(switchData[j].x - dx)
-            } else {
-                switchFlag = true
-            }
-            drawbase()
-            switchData.forEach((r, index) => {
-                if (index === i || index === j) {
-                    if (i + 1 !== 6 || j !== 6) {
-                        parameter.ctx.fillStyle = util.style.currentColor
-                    }
-                }
-                else {
-                    parameter.ctx.fillStyle = util.opt.barStyle.color
-                }
-                parameter.ctx.fillRect(r.x, r.y, r.width, r.height)
-            })
+    const [leftIndex, rightIndex] = normalizeRange(i, j)
+    const startBars = state.bars.map((bar) => ({ ...bar }))
+    const leftStartX = startBars[leftIndex].x
+    const rightStartX = startBars[rightIndex].x
 
-            if (!switchFlag) {
-                swanimation = requestAnimationFrame(drawSwitch)
-            } else {
-                /**
-                 * 由于直接在ij计算x坐标的值后发生改变，为了确保下次引用ij时x坐标值是原始的坐标
-                 * 
-                 * 绘制完成后需要进行一次重新赋值
-                 */
-                [switchData[i], switchData[j]] = [switchData[j], switchData[i]]
-                resolve()
-            }
-        }
-        drawSwitch()
+    enqueueAnimation(state.option.animate.moveDuration, (progress) => {
+      const frameBars = startBars.map((bar) => ({ ...bar }))
+      frameBars[leftIndex].x = Math.round(leftStartX + (rightStartX - leftStartX) * progress)
+      frameBars[rightIndex].x = Math.round(rightStartX + (leftStartX - rightStartX) * progress)
+      render(frameBars, [leftIndex, rightIndex])
+    }).then(() => {
+      const temp = state.bars[leftIndex]
+      state.bars[leftIndex] = state.bars[rightIndex]
+      state.bars[rightIndex] = temp
+
+      state.bars[leftIndex].x = leftStartX
+      state.bars[rightIndex].x = rightStartX
+      render(state.bars)
+      resolve()
     })
+  })
 }
 
-// 插入
-let tempobj = {
-    obj: undefined,
-    index: undefined
-};
-
 function covertRect(i, j) {
-    // i<j
-
-    let maxRange = []
-    let insertFalg = false;
-    if (i > j) {
-        i = i ^ j
-        j = i ^ j
-        i = i ^ j
+  return new Promise((resolve) => {
+    if (!state.bars.length) {
+      resolve()
+      return
     }
-    return new Promise(resolve => {
 
+    const [leftIndex, rightIndex] = normalizeRange(i, j)
+    if (leftIndex === rightIndex) {
+      resolve()
+      return
+    }
 
-        let dx = minus(switchData[i + 1].x, switchData[i].x)
-        let min = i
-        let max = j
-        function drawSwitch() {
-            i = min
-            j = max
-            while (j > i) {
-                maxRange[j] = primary[j] //保存横坐标
-                if (switchData[j - 1].x <= maxRange[j]) {
-                    switchData[j - 1].x = Math.ceil(switchData[j - 1].x + dx)
-                    // switchData[j].x = Math.floor(switchData[j].x - dx)
-                } else {
-                    insertFalg = true
-                }
-                j--
-            }
-            util.clear()
-            drawbase()
-            switchData.forEach((r, index) => {
-                if (index === i || index === j) {
-                    if (i + 1 !== 6 || j !== 6) {
-                        parameter.ctx.fillStyle = util.style.currentColor
-                    }
-                }
-                else {
-                    parameter.ctx.fillStyle = util.opt.barStyle.color
-                }
-                parameter.ctx.fillRect(r.x, r.y, r.width, r.height)
-            })
-            if (!insertFalg) {
-                swanimation = requestAnimationFrame(drawSwitch)
-            } else {
-                /**
-                 * 由于直接在ij计算x坐标的值后发生改变，为了确保下次引用ij时x坐标值是原始的坐标
-                 * 
-                 * 绘制完成后需要进行一次重新赋值
-                 */
-                tempobj.obj = Object.assign({}, switchData[max]);
-                tempobj.index = max
-                tempobj.obj.x = primary[min]
+    const startBars = state.bars.map((bar) => ({ ...bar }))
+    const movingBar = { ...startBars[rightIndex] }
 
-                while (max > min) {
-                    switchData[max] = switchData[max - 1]
-                    max--;
-                }
+    enqueueAnimation(state.option.animate.moveDuration, (progress) => {
+      const frameBars = startBars.map((bar) => ({ ...bar }))
 
-                resolve()
-            }
-        }
-        drawSwitch()
+      for (let k = rightIndex; k > leftIndex; k--) {
+        const from = startBars[k - 1]
+        const to = startBars[k]
+        frameBars[k - 1].x = Math.round(from.x + (to.x - from.x) * progress)
+      }
+
+      frameBars[rightIndex].height = 0
+      frameBars[rightIndex].y = state.option.chatZone[3]
+      render(frameBars)
+    }).then(() => {
+      for (let k = rightIndex; k > leftIndex; k--) {
+        state.bars[k] = state.bars[k - 1]
+      }
+
+      state.insertionCache = { ...movingBar, x: state.bars[leftIndex].x }
+      render(state.bars)
+      resolve()
     })
-
+  })
 }
 
 function insertRect(index) {
+  if (!state.insertionCache || !state.bars.length) {
+    render(state.bars)
+    return
+  }
 
-    switchData[index] = tempobj.obj
-
-
-    switchData.forEach(r => {
-        parameter.ctx.fillStyle = util.opt.barStyle.color
-        parameter.ctx.fillRect(r.x, r.y, r.width, r.height)
-    })
-
-    //   let insertflag = false
-    // const key=tempobj.index
-    // const dx=minus(switchData[key].x,switchData[index].x)
-
-    // let anmiation=undefined
-
-
-    // function draw() {
-    //     util.clear()
-    //     drawbase()
-    //     switchData.forEach((r,i) => {
-    //         if(index===i){
-    //             if(switchData[i].x>=primary[i]){
-    //                 switchData[i].x=Math.floor(switchData[i].x-dx)
-    //             }else {
-    //                 insertflag=true
-    //             }
-    //         }
-    //         parameter.ctx.fillStyle = util.opt.barStyle.color
-    //         parameter.ctx.fillRect(r.x, r.y, r.width, r.height)
-    //     })
-
-    //     if(insertflag===true){
-    //         cancelAnimationFrame(anmiation)
-    //     }
-    //     anmiation=requestAnimationFrame(draw)
-    // }
-    // draw()
-
-}
-function init(canvas_) {
-    let data = [70, 50, 200, 330, 390, 320, 220]
-    let yAxisLabel = ['0', '100', '200', '300', '400']
-    let xAxisLabel = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    let radio = util.creatHiDPI(canvas_)
-
-    if (arguments.length > 1) {
-
-        // data , y ,x 
-        ({ data, yAxisLabel, xAxisLabel } = arguments[1])
-    }
-    utilProxy.ctx = canvas_.getContext('2d');
-    utilProxy.canvas_ = canvas_
-
-    utilProxy.opt.yAxisLabel = yAxisLabel
-    utilProxy.opt.xAxisLabel = xAxisLabel
-    utilProxy.opt.data = data
-
-    canvas_.width = 700 * radio
-    canvas_.height = 500 * radio
-    canvas_.style.width = 700 + "px";
-    canvas_.style.height = 500 + "px";
-    parameter.ctx.scale(2, 2)
-    animatefunc()
+  state.bars[index] = { ...state.insertionCache }
+  state.insertionCache = null
+  render(state.bars)
 }
 
 export { init, switchRect, covertRect, insertRect }
-
-
-

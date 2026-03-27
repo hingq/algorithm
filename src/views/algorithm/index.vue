@@ -1,16 +1,22 @@
 <script setup>
 import router from '@/router';
-import { onMounted } from 'vue';
-onMounted(() => {
-    const open_btn = document.querySelector('.open-btn')
-    const close_btn = document.querySelector('.close-btn')
-    open_btn.addEventListener('click', () => {
-        openList()
-    })
+import { onBeforeUnmount, onMounted } from 'vue';
+let openBtn = null
+let closeBtn = null
 
-    close_btn.addEventListener('click', () => {
-        closeList()
-    })
+const handleOpen = () => openList()
+const handleClose = () => closeList()
+
+onMounted(() => {
+    openBtn = document.querySelector('.open-btn')
+    closeBtn = document.querySelector('.close-btn')
+    openBtn?.addEventListener('click', handleOpen)
+    closeBtn?.addEventListener('click', handleClose)
+})
+
+onBeforeUnmount(() => {
+    openBtn?.removeEventListener('click', handleOpen)
+    closeBtn?.removeEventListener('click', handleClose)
 })
 const closeList = () => {
     const nav = document.querySelectorAll('.nav')
@@ -47,15 +53,19 @@ const toUrl = (key, url) => {
                             <el-collapse-item title="排序" name="1">
                                 <div class="link">
                                     <span @click="toUrl('sort', 'buble')">冒泡排序</span>
-                                    <span @click="toUrl('sort', 'insert')"> 插入排序</span>
+                                    <span @click="toUrl('sort', 'insert')">插入排序</span>
+                                    <span @click="toUrl('sort', 'select')">选择排序</span>
+                                    <span @click="toUrl('sort', 'shell')">希尔排序</span>
+                                    <span @click="toUrl('sort', 'quick')">快速排序</span>
+                                    <span @click="toUrl('sort', 'heap')">堆排序</span>
                                 </div>
                             </el-collapse-item>
                             <el-collapse-item title="查找" name="2">
                                 <div class="link">
-                                    <span>
+                                    <span @click="toUrl('search', 'binary')">
                                         折半查找
                                     </span>
-                                    <span>
+                                    <span @click="toUrl('search', 'sequence')">
                                         顺序查找
                                     </span>
                                 </div>
