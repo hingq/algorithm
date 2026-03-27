@@ -68,6 +68,11 @@ const clearRaf = () => {
   }
 }
 
+const getCanvasDisplaySize = () => ({
+  width: state.canvas.width / state.dpr,
+  height: state.canvas.height / state.dpr,
+})
+
 const buildBarsFromData = (data) => {
   const { chatZone, xAxisLabel, yMax, barStyle } = state.option
   const xLength = (chatZone[2] - chatZone[0]) * 0.9
@@ -141,9 +146,10 @@ const drawAxisLayer = () => {
 const render = (bars = state.bars, highlight = []) => {
   const { ctx, canvas } = state
   const { barStyle } = state.option
+  const { width, height } = getCanvasDisplaySize()
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.drawImage(state.baseLayer, 0, 0)
+  ctx.clearRect(0, 0, width, height)
+  ctx.drawImage(state.baseLayer, 0, 0, width, height)
 
   bars.forEach((bar, idx) => {
     const active = highlight.includes(idx)
