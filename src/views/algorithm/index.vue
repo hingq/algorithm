@@ -37,8 +37,8 @@ const toUrl = (key, url) => {
 </script>
 
 <template>
-    <button class="nav-btn open-btn">cilck</button>
-    <div>
+    <div class="algorithm-layout">
+        <button class="nav-btn open-btn">cilck</button>
         <div class=" nav nav-black">
             <div class="nav nav-red">
                 <div class="nav nav-white">
@@ -85,8 +85,10 @@ const toUrl = (key, url) => {
                 </div>
             </div>
         </div>
+        <main class="algorithm-content">
+            <router-view></router-view>
+        </main>
     </div>
-    <router-view></router-view>
 
 </template>
 
@@ -102,6 +104,7 @@ const toUrl = (key, url) => {
     position: fixed;
     top: 10px;
     left: 10px;
+    z-index: 1300;
 }
 
 .nav {
@@ -112,6 +115,7 @@ const toUrl = (key, url) => {
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
     overflow: auto;
+    z-index: 1200;
 }
 
 .nav .link {
@@ -187,6 +191,11 @@ const toUrl = (key, url) => {
     margin-top: 50px;
 }
 
+.algorithm-content {
+    position: relative;
+    z-index: 1;
+    padding: 16px 24px;
+}
 
 
 :deep(.el-collapse-item__header) {
