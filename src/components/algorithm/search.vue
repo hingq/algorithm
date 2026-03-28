@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <algorithm>
+  <algorithm class="search-panel">
     <template #header>
       <h2>{{ title }}</h2>
       <div class="tool-bar">
@@ -128,6 +128,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.search-panel {
+  position: relative;
+  z-index: 1;
+}
+
 .tool-bar {
   display: flex;
   align-items: center;
