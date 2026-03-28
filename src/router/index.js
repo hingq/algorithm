@@ -1,8 +1,12 @@
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { pageHeader } from '@/stores'
+const isGitHubPages = Boolean(import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/')
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: isGitHubPages
+    ? createWebHashHistory(import.meta.env.BASE_URL)
+    : createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
