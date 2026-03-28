@@ -25,7 +25,7 @@ const createIteratorSet = (algorFunc) => {
 
 const bootstrap = async () => {
   try {
-    const { title: t, algor: algorFunc } = await getFunc()
+    const { title: t, algor: algorFunc } = await getFunc(route.query)
     title.value = t
     errorMessage.value = ""
     log.value = []

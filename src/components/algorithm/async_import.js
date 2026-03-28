@@ -1,6 +1,4 @@
 import { sortMap } from '@/components/algorithm/sort/map'
-import { useRoute } from 'vue-router'
-
 const moduleLoaderMap = {
   sort: () => import('./sort/index.js'),
   binary: () => import('./binary/index.js'),
@@ -16,9 +14,8 @@ const titleMapByKey = {
   ]),
 }
 
-export const import_ = async () => {
-  const route = useRoute()
-  const { key, algor } = route.query
+export const import_ = async (query = {}) => {
+  const { key, algor } = query
 
   const loader = moduleLoaderMap[key]
   if (!loader) {
