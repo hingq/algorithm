@@ -1,4 +1,3 @@
-import { getRandomColor } from '@/util/randomColor'
 import { line, createCircle } from './animation'
 
 class TreeNode {
@@ -6,7 +5,6 @@ class TreeNode {
     this.value = value
     this.left = null
     this.right = null
-    this.color = getRandomColor()
   }
 }
 
