@@ -1,41 +1,41 @@
-// 节点属性
-const attr = {
-    color: [],
-    size: '50',
+const nodeStyle = {
+  radius: 50,
+  fillColor: '#eef4ff',
+  strokeColor: '#3b82f6',
+  strokeWidth: 4,
+  textColor: '#1f2937',
+  font: 'bold 38px "PingFang SC", "Microsoft YaHei", sans-serif',
+}
 
+const lineStyle = {
+  width: 3,
+  color: '#64748b',
 }
-// 线条属性
-const lineAttr = {
-    width: 3,
-}
+
 export const createCircle = (ctx, node, x, y) => {
-    // const { x: x, y: y } = c.axis()
-    const r = attr.size //半径
+  ctx.beginPath()
+  ctx.arc(x, y, nodeStyle.radius, 0, 2 * Math.PI)
+  ctx.fillStyle = nodeStyle.fillColor
+  ctx.fill()
+  ctx.lineWidth = nodeStyle.strokeWidth
+  ctx.strokeStyle = nodeStyle.strokeColor
+  ctx.stroke()
 
-    ctx.fillStyle = attr.color
-    // 颜色
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.strokeStyle = node.color;
-    ctx.stroke();
-    ctx.fillStyle = 'black';
-    ctx.font = "bold 48px serif";
-    const text = node.value
-    let off = ctx.measureText(node.value).width;
-    ctx.fillText(text, x - off / 2, y + off / 2);
+  ctx.fillStyle = nodeStyle.textColor
+  ctx.font = nodeStyle.font
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(String(node.value), x, y)
 }
 
-export const line = (ctx, x1, y1, x2, y2,progress) => {
-    ctx.lineWidth = lineAttr.width;
-    ctx.beginPath();
-    const currentX = x1 + (x2 - x1) * progress;
-    const currentY = y1 + (y2 - y1) * progress;
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(currentX, currentY);
-    ctx.strokeStyle = 'black';
-    ctx.stroke();
+export const line = (ctx, x1, y1, x2, y2, progress) => {
+  ctx.lineWidth = lineStyle.width
+  ctx.beginPath()
+  const currentX = x1 + (x2 - x1) * progress
+  const currentY = y1 + (y2 - y1) * progress
+  ctx.moveTo(x1, y1)
+  ctx.lineTo(currentX, currentY)
+  ctx.strokeStyle = lineStyle.color
+  ctx.stroke()
 }
-
 
