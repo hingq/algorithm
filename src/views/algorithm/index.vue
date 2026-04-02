@@ -1,6 +1,7 @@
 <script setup>
 import router from '@/router';
 import { onBeforeUnmount, onMounted } from 'vue';
+import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets } from '@element-plus/icons-vue'
 let openBtn = null
 let closeBtn = null
 
@@ -50,31 +51,37 @@ const toUrl = (key, url) => {
                         <div class="link">
                         </div>
                         <el-collapse>
-                            <el-collapse-item title="排序" name="1">
+                            <el-collapse-item name="1">
+                                <template #title>
+                                    <el-icon><Sort /></el-icon>
+                                    <span class="collapse-title">排序</span>
+                                </template>
                                 <div class="link">
-                                    <span @click="toUrl('sort', 'buble')">冒泡排序</span>
-                                    <span @click="toUrl('sort', 'insert')">插入排序</span>
-                                    <span @click="toUrl('sort', 'select')">选择排序</span>
-                                    <span @click="toUrl('sort', 'shell')">希尔排序</span>
-                                    <span @click="toUrl('sort', 'quick')">快速排序</span>
-                                    <span @click="toUrl('sort', 'heap')">堆排序</span>
+                                    <span @click="toUrl('sort', 'buble')"><el-icon><Top /></el-icon>冒泡排序</span>
+                                    <span @click="toUrl('sort', 'insert')"><el-icon><Download /></el-icon>插入排序</span>
+                                    <span @click="toUrl('sort', 'select')"><el-icon><Operation /></el-icon>选择排序</span>
+                                    <span @click="toUrl('sort', 'shell')"><el-icon><DataAnalysis /></el-icon>希尔排序</span>
+                                    <span @click="toUrl('sort', 'quick')"><el-icon><Histogram /></el-icon>快速排序</span>
+                                    <span @click="toUrl('sort', 'heap')"><el-icon><CollectionTag /></el-icon>堆排序</span>
                                 </div>
                             </el-collapse-item>
-                            <el-collapse-item title="查找" name="2">
+                            <el-collapse-item name="2">
+                                <template #title>
+                                    <el-icon><Search /></el-icon>
+                                    <span class="collapse-title">查找</span>
+                                </template>
                                 <div class="link">
-                                    <span @click="toUrl('search', 'binary')">
-                                        折半查找
-                                    </span>
-                                    <span @click="toUrl('search', 'sequence')">
-                                        顺序查找
-                                    </span>
+                                    <span @click="toUrl('search', 'binary')"><el-icon><Pointer /></el-icon>折半查找</span>
+                                    <span @click="toUrl('search', 'sequence')"><el-icon><Tickets /></el-icon>顺序查找</span>
                                 </div>
                             </el-collapse-item>
-                            <el-collapse-item title="二叉树" name="3">
+                            <el-collapse-item name="3">
+                                <template #title>
+                                    <el-icon><Share /></el-icon>
+                                    <span class="collapse-title">二叉树</span>
+                                </template>
                                 <div class="link">
-                                    <span @click="toUrl('binary', 'create')">
-                                        二叉搜索树
-                                    </span>
+                                    <span @click="toUrl('binary', 'create')"><el-icon><Share /></el-icon>二叉搜索树</span>
                                 </div>
                                 <div>
 
@@ -132,6 +139,8 @@ const toUrl = (key, url) => {
 .nav .link span {
     cursor: pointer;
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin-top: 7px;
     background: linear-gradient(to right, #737373, #141414) no-repeat left bottom;
     background-size: 0cqh 1px;
@@ -198,10 +207,14 @@ const toUrl = (key, url) => {
 }
 
 
-:deep(.el-collapse-item__header) {
-
-    font-size: 16px !important;
-
+.collapse-title {
+    margin-left: 6px;
 }
+
+:deep(.el-collapse-item__header) {
+    font-size: 16px !important;
+    gap: 4px;
+}
+
 </style>
 <style></style>
