@@ -10,7 +10,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/algorithm',
+      component: () => import('../views/Landing.vue'),
       name:'persal'
     },
     {
