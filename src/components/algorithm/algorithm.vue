@@ -91,11 +91,11 @@ button {
 }
 
 .describle {
-    border: 1px solid var(--primary-color);
-    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
     color: #E5EAF3;
-    background: rgb(73, 140, 186);
-    background: linear-gradient(315deg, rgba(73, 140, 186, 1) 0%, rgba(23, 78, 116, 1) 80%);
+    background: linear-gradient(135deg, var(--vt-c-blue) 0%, var(--vt-c-black) 100%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 
@@ -104,7 +104,9 @@ button {
     width: 100%;
     padding: 7px;
     padding-left: 17px;
-    border-bottom: 1px solid var(--primary-color);
+    background: rgba(0, 0, 0, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 600;
 }
 
 .des-body {
@@ -120,21 +122,26 @@ button {
     /* min-height: 300px; */
     margin: 7px 20px 0;
     transition: all 0.5s ease;
+    color: #EAF2FF;
+    line-height: 1.7;
 }
 
 .des-body::-webkit-scrollbar {
     border-radius: 25px;
     height: 5px;
     width: 7px;
-    background-color: #f1f1f1;
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .des-body::-webkit-scrollbar-thumb {
     height: 10px;
-    background-color: rgba(204,204,204,0.9);
+    background-color: rgba(120, 170, 210, 0.65);
     border-radius: 5px;
 }
 
+.des-body::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(140, 190, 232, 0.82);
+}
 
 
 </style>
