@@ -37,26 +37,6 @@ const router = createRouter({
           component:()=>import('../views/index.vue'),
           name:'Persal Center'
         },
-        // 课程
-        {
-          path: 'course',
-          children: [{
-            path: 'student',
-            component: () => import('../views/course/student.vue'),
-            name:'couse'
-          },
-          {
-            path: 'taken',
-            component: () => import('../views/course/taken.vue'),
-            name:'taken'
-          },
-          {
-            path: 'select',
-            component: () => import('../views/course/select.vue'),
-            name:'select'
-          }
-          ]
-        },
         // 考试
         {
           path: 'test',

@@ -9,8 +9,8 @@ const coreFeatures = [
     description: '通过动态演示快速理解排序、搜索与二分等核心算法。'
   },
   {
-    title: '课程/考试管理',
-    description: '在统一入口中管理课程安排、考试组织与日常教学流程。'
+    title: '考试与流程',
+    description: '聚焦考试安排、申请与评价流程，减少重复操作。'
   },
   {
     title: '快速上手',
@@ -31,7 +31,7 @@ const goToAlgorithmDemo = () => {
   <main class="landing-page">
     <section class="hero">
       <h1 class="title">Persal 教学与算法平台</h1>
-      <p class="subtitle">一个集教学管理与算法学习于一体的轻量化工作空间。</p>
+      <p class="subtitle">一个聚焦考试流程与算法学习的轻量化工作空间。</p>
     </section>
 
     <section class="feature-grid">
