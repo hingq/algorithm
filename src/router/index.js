@@ -86,7 +86,7 @@ const router = createRouter({
     },
     {
       path:'/algorithm',
-      // redirect:'/algorithm/sort?key=sort&algor=buble',
+      redirect:'/algorithm/sort?key=sort&algor=buble',
       component:()=>import('@/views/algorithm/index.vue'),
       children:[
         {
