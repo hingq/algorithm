@@ -5,33 +5,37 @@ const router = useRouter()
 
 const coreFeatures = [
   {
-    title: '算法可视化',
-    description: '通过动态演示快速理解排序、搜索与二分等核心算法。'
+    title: '排序可视化',
+    description: '通过柱状图动画直观观察冒泡、选择等排序过程中的每一步。'
   },
   {
-    title: '课程/考试管理',
-    description: '在统一入口中管理课程安排、考试组织与日常教学流程。'
+    title: '查找算法',
+    description: '对比顺序查找与二分查找，理解时间复杂度差异与适用场景。'
   },
   {
-    title: '快速上手',
-    description: '简洁导航与清晰模块划分，帮助你在几分钟内开始使用系统。'
+    title: '二叉树演示',
+    description: '通过二叉树节点增删与遍历演示，掌握树结构的核心操作。'
+  },
+  {
+    title: '交互动画',
+    description: '点击即可触发算法步骤演示，让学习过程更具参与感与反馈性。'
   }
 ]
 
-const goToSystem = () => {
-  router.push('/layout/index')
-}
-
 const goToAlgorithmDemo = () => {
   router.push('/algorithm')
+}
+
+const goToAbout = () => {
+  router.push('/about')
 }
 </script>
 
 <template>
   <main class="landing-page">
     <section class="hero">
-      <h1 class="title">Persal 教学与算法平台</h1>
-      <p class="subtitle">一个集教学管理与算法学习于一体的轻量化工作空间。</p>
+      <h1 class="title">算法演示/学习平台</h1>
+      <p class="subtitle">聚焦算法理解与交互实践，帮助你高效掌握核心数据结构与算法思维。</p>
     </section>
 
     <section class="feature-grid">
@@ -42,8 +46,8 @@ const goToAlgorithmDemo = () => {
     </section>
 
     <section class="actions">
-      <button class="btn btn-primary" @click="goToSystem">进入系统</button>
-      <button class="btn btn-secondary" @click="goToAlgorithmDemo">查看算法演示</button>
+      <button class="btn btn-primary" @click="goToAlgorithmDemo">进入算法演示</button>
+      <button class="btn btn-secondary" @click="goToAbout">查看介绍 / 关于</button>
     </section>
   </main>
 </template>
@@ -130,5 +134,27 @@ const goToAlgorithmDemo = () => {
   background: var(--color-background);
   color: var(--color-heading);
   border: 1px solid var(--color-borderColor);
+}
+
+@media (max-width: 768px) {
+  .landing-page {
+    min-height: auto;
+    justify-content: flex-start;
+    padding: 1.5rem 0.9rem;
+    gap: 1.5rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
 </style>
