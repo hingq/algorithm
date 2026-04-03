@@ -1,9 +1,19 @@
 <script setup>
 import router from '@/router';
 import { onBeforeUnmount, onMounted } from 'vue';
-import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets } from '@element-plus/icons-vue'
+import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets, Menu, Close } from '@element-plus/icons-vue'
 let openBtn = null
 let closeBtn = null
+let prevBodyOverflow = ''
+
+const setBodyScrollLock = (isLocked) => {
+    if (isLocked) {
+        prevBodyOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        return
+    }
+    document.body.style.overflow = prevBodyOverflow
+}
 
 const handleOpen = () => openList()
 const handleClose = () => closeList()
@@ -18,14 +28,17 @@ onMounted(() => {
 onBeforeUnmount(() => {
     openBtn?.removeEventListener('click', handleOpen)
     closeBtn?.removeEventListener('click', handleClose)
+    setBodyScrollLock(false)
 })
 const closeList = () => {
     const nav = document.querySelectorAll('.nav')
     nav.forEach(nav_el => nav_el.classList.remove('visible'))
+    setBodyScrollLock(false)
 }
 const openList = () => {
     const nav = document.querySelectorAll('.nav')
     nav.forEach(nav_el => nav_el.classList.add('visible'))
+    setBodyScrollLock(true)
 }
 const toUrl = (key, url) => {
     router.push({
@@ -39,13 +52,14 @@ const toUrl = (key, url) => {
 
 <template>
     <div class="algorithm-layout">
-        <button class="nav-btn open-btn">cilck</button>
+        <button class="nav-btn open-btn" aria-label="打开导航">
+            <el-icon><Menu /></el-icon>
+        </button>
         <div class=" nav nav-black">
             <div class="nav nav-red">
                 <div class="nav nav-white">
-                    <button class="nav-btn close-btn">
-                        change
-                        <i class="fas fa-times"></i>
+                    <button class="nav-btn close-btn" aria-label="关闭导航">
+                        <el-icon><Close /></el-icon>
                     </button>
                     <div class="side">
                         <div class="link">
@@ -100,6 +114,12 @@ const toUrl = (key, url) => {
 </template>
 
 <style scoped>
+.algorithm-layout {
+    --algorithm-content-z: 1;
+    --algorithm-nav-z: 1200;
+    --algorithm-open-btn-z: 1300;
+}
+
 .nav-btn {
     border: none;
     background-color: transparent;
@@ -111,7 +131,7 @@ const toUrl = (key, url) => {
     position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 1300;
+    z-index: var(--algorithm-open-btn-z);
 }
 
 .nav {
@@ -122,7 +142,8 @@ const toUrl = (key, url) => {
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
     overflow: auto;
-    z-index: 1200;
+    z-index: var(--algorithm-nav-z);
+    pointer-events: none;
 }
 
 .nav .link {
@@ -144,7 +165,7 @@ const toUrl = (key, url) => {
     margin-top: 7px;
     background: linear-gradient(to right, #737373, #141414) no-repeat left bottom;
     background-size: 0cqh 1px;
-    transition: babackground-size 1s ease-in;
+    transition: background-size 1s ease-in;
 }
 
 .nav .link span:hover {
@@ -153,6 +174,7 @@ const toUrl = (key, url) => {
 
 .nav.visible {
     transform: translateX(0);
+    pointer-events: auto;
 }
 
 .nav-black {
@@ -202,7 +224,7 @@ const toUrl = (key, url) => {
 
 .algorithm-content {
     position: relative;
-    z-index: 1;
+    z-index: var(--algorithm-content-z);
     padding: 16px 24px;
 }
 
