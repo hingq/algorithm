@@ -1,10 +1,11 @@
 <script setup>
 import router from '@/router';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets, Menu, Close } from '@element-plus/icons-vue'
 let openBtn = null
 let closeBtn = null
 let prevBodyOverflow = ''
+const isNavOpen = ref(false)
 
 const setBodyScrollLock = (isLocked) => {
     if (isLocked) {
@@ -33,11 +34,13 @@ onBeforeUnmount(() => {
 const closeList = () => {
     const nav = document.querySelectorAll('.nav')
     nav.forEach(nav_el => nav_el.classList.remove('visible'))
+    isNavOpen.value = false
     setBodyScrollLock(false)
 }
 const openList = () => {
     const nav = document.querySelectorAll('.nav')
     nav.forEach(nav_el => nav_el.classList.add('visible'))
+    isNavOpen.value = true
     setBodyScrollLock(true)
 }
 const toUrl = (key, url) => {
@@ -51,7 +54,7 @@ const toUrl = (key, url) => {
 </script>
 
 <template>
-    <div class="algorithm-layout">
+    <div class="algorithm-layout" :class="{ 'nav-open': isNavOpen }">
         <button class="nav-btn open-btn" aria-label="打开导航">
             <el-icon><Menu /></el-icon>
         </button>
@@ -132,6 +135,12 @@ const toUrl = (key, url) => {
     top: 10px;
     left: 10px;
     z-index: var(--algorithm-open-btn-z);
+    transition: opacity 0.2s ease;
+}
+
+.algorithm-layout.nav-open .open-btn {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .nav {
