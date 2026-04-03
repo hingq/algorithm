@@ -9,33 +9,6 @@
       </template>
     </el-menu-item>
 
-    <el-sub-menu index="/layout/course">
-      <template #title>
-        <el-icon>
-          <Reading />
-        </el-icon>
-        <span>课程信息</span>
-      </template>
-      <el-menu-item index="/layout/course/student">
-        <el-icon>
-          <Calendar />
-        </el-icon>
-        <span>学生课表</span>
-      </el-menu-item>
-      <el-menu-item index="/layout/course/taken">
-        <el-icon>
-          <Checked />
-        </el-icon>
-        <span>已修课程</span>
-      </el-menu-item>
-      <el-menu-item index="/layout/course/select">
-        <el-icon>
-          <Select />
-        </el-icon>
-        <span>学生选课</span>
-      </el-menu-item>
-    </el-sub-menu>
-
     <el-sub-menu index="/layout/test">
       <template #title>
         <el-icon>
@@ -81,14 +54,10 @@
 <script setup>
 import { computed } from 'vue'
 import {
-  Calendar,
-  Checked,
   Clock,
   Document,
   EditPen,
   List,
-  Reading,
-  Select,
   Setting,
   Tickets,
   UserFilled,
