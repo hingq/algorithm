@@ -13,6 +13,9 @@ import router from './router'
 // 表单校验指令
 import directives from './directive/index'
 const $bus=new EventBus()
+
+theme.getTheme()
+
 const app = createApp(App)
 const pinia = createPinia()
 
