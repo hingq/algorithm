@@ -14,15 +14,15 @@ import router from './router'
 // 表单校验指令
 import directives from './directive/index'
 const $bus=new EventBus()
+
+theme.getTheme()
+
 const app = createApp(App)
 
 app.use(ElementPlus)
 app.use(createPinia())
 app.use(router)
-
-theme.getTheme()
 app.use(directives)
 app.mount('#app')
 
 app.provide('$bus',$bus)
-
