@@ -1,46 +1,25 @@
-import { defineStore } from "pinia";
-import { dark, light } from "@/styles/dark";
+import { defineStore } from 'pinia'
+
+const THEME_KEY = 'theme'
+
 export const useTheme = defineStore('theme', () => {
+  const getTheme = () => {
+    const localTheme = localStorage.getItem(THEME_KEY)
 
-    const getTheme = () => {
-        const localTheme = localStorage.getItem('theme')
-        if (localTheme) {
-            if (localTheme === 'dark') {
-                theme('toDark')
-                // localStorage.setItem('theme', 'light')
-            } if (localTheme === 'light') {
-                // localStorage.setItem('theme', 'dark')
-                theme('toLight')
-            }
-        } else {
-            return
-        }
+    if (localTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else if (localTheme === 'light') {
+      document.documentElement.classList.remove('dark')
     }
-    function theme(flag) {
-        if (flag === 'toDark') {
-            document.documentElement.classList.add('dark')
-            for (const [key, value] of Object.entries(dark)) {
-                document.documentElement.style.setProperty(key, value)
-            }
-        } else if (flag === 'toLight') {
-            document.documentElement.classList.remove('dark')
-            for (const [key, value] of Object.entries(light)) {
-                document.documentElement.style.setProperty(key, value)
-            }
-        }
-    }
-    const setTheme = () => {
-        let localTheme = localStorage.getItem('theme')
-        if (!localTheme) {
-            localStorage.setItem('theme', 'dark')
-            getTheme()
-        }
-        else {
-            localTheme = localTheme === 'dark' ? 'light' : 'dark'
-            localStorage.setItem('theme', localTheme)
-            getTheme()
-        }
+  }
 
-    }
-    return { getTheme, setTheme }
+  const setTheme = () => {
+    const localTheme = localStorage.getItem(THEME_KEY)
+    const nextTheme = localTheme === 'dark' ? 'light' : 'dark'
+
+    localStorage.setItem(THEME_KEY, nextTheme)
+    getTheme()
+  }
+
+  return { getTheme, setTheme }
 })
