@@ -4,7 +4,6 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import EventBus from './util/eventBus'
-import { theme } from './stores'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -18,10 +17,12 @@ const $bus=new EventBus()
 theme.getTheme()
 
 const app = createApp(App)
+const pinia = createPinia()
 
 app.use(ElementPlus)
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
+
 app.use(directives)
 app.mount('#app')
 
