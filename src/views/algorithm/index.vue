@@ -4,6 +4,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets, Menu, Close } from '@element-plus/icons-vue'
 const navVisible = ref(false)
 let prevBodyOverflow = ''
+const isNavOpen = ref(false)
 
 const setBodyScrollLock = (isLocked) => {
     if (isLocked) {
@@ -134,6 +135,12 @@ const toUrl = (key, url) => {
     top: 10px;
     left: 10px;
     z-index: var(--algorithm-open-btn-z);
+    transition: opacity 0.2s ease;
+}
+
+.algorithm-layout.nav-open .open-btn {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .nav {
