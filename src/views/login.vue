@@ -1,77 +1,69 @@
 
 <script setup>
 import { Lock, Hide, View } from '@element-plus/icons-vue'
-import {  ref } from 'vue';
-// 表单校验
+import { ref } from 'vue';
 
 const rules =
     { required: true, message: '请输入', trigger: 'blur' }
 
 const submit = () => {
-    console.log('callback');
-    // ruleFormRef.value.validate((valid) => {
-    //     console.log(valid);
-    // })
-    loadingFlag.value=true
-    setTimeout(()=>{
-        loadingFlag.value=false
-    },2000)
+    loadingFlag.value = true
+    setTimeout(() => {
+        loadingFlag.value = false
+    }, 2000)
 }
 const isShow = ref(false)
 const password = ref('')
-const mouseEvent=(e) => {
-    // 使用mousedown 不使用click，mousedown优先级高于blur，使用click会先触发blur事件
-            e.preventDefault()
-            isShow.value = !isShow.value
-            if (isShow.value) {
-                // 阻止事件冒泡
-                password.value.type = 'text'
-            } else {
-                password.value.type = 'password'
-
-            }
-            return false
+const mouseEvent = (e) => {
+    e.preventDefault()
+    isShow.value = !isShow.value
+    if (isShow.value) {
+        password.value.type = 'text'
+    } else {
+        password.value.type = 'password'
+    }
+    return false
 }
-const loadingFlag=ref(false)
+const loadingFlag = ref(false)
 </script>
 
 <template>
-    <div class="container-root">
-        <el-form novalidate>
-            <div class="layout">
-                <div class="title">
-                    <el-avatar :icon="Lock" class="icon" :size="50"></el-avatar>
-                    <h2>Sign in</h2>
+    <div class="container-root mx-auto block w-full px-6">
+        <el-form novalidate class="h-[90vh] w-screen pt-12">
+            <div class="layout flex h-[90vh] w-screen flex-col items-center overflow-hidden">
+                <div class="title mb-8 mt-12 text-center">
+                    <el-avatar :icon="Lock" class="icon ml-2 bg-rose-600 text-2xl" :size="50"></el-avatar>
+                    <h2 class="text-2xl font-normal">Sign in</h2>
                 </div>
-                <div class="container">
-                    <div class="user">
+                <div class="container relative mt-[-10px] h-[400px] w-[400px] overflow-hidden">
+                    <div class="user absolute left-0 top-0 h-16 w-full mt-5">
                         <el-form-item prop="username">
-                            <input class="input" type="text" autocomplete="email" required v-verify="rules" />
-                            <label for="">
+                            <input class="input w-[370px] border-0 bg-transparent pb-4 pl-1 pt-4 tracking-wide outline-none" type="text" autocomplete="email" required v-verify="rules" />
+                            <label>
                                 <span>username</span>
                             </label>
                         </el-form-item>
                     </div>
-                    <div class="password" prop="password">
+                    <div class="password absolute left-0 mt-[110px] w-full">
                         <el-form-item>
-                            <input class="input" type="password" required v-verify="rules" ref="password" />
-                            <label for="">
+                            <input class="input w-[370px] border-0 bg-transparent pb-4 pl-1 pt-4 tracking-wide outline-none" type="password" required v-verify="rules" ref="password" />
+                            <label>
                                 <span>password</span>
                             </label>
-                            <el-icon class="passIcon myicon" v-show="isShow === false ? true : false" @mousedown="mouseEvent">
+                            <el-icon class="passIcon myicon absolute right-2.5 cursor-pointer" v-show="isShow === false ? true : false" @mousedown="mouseEvent">
                                 <Hide />
                             </el-icon>
-                            <el-icon class="passIcon myicon" v-show="isShow === true ? true : false" @mousedown="mouseEvent">
+                            <el-icon class="passIcon myicon absolute right-2.5 cursor-pointer" v-show="isShow === true ? true : false" @mousedown="mouseEvent">
                                 <View />
                             </el-icon>
                         </el-form-item>
 
                     </div>
-                    <div class="submit" @click="submit" >
-                        <el-button color="#1976d2" v-load="loadingFlag" >submit</el-button>
+                    <div class="submit absolute top-[180px] w-full" @click="submit">
+                        <el-button color="#1976d2" v-load="loadingFlag" class="!h-[46px] !w-full">submit</el-button>
                     </div>
                 </div>
-                <div class="copyright">
+                <div class="copyright text-slate-500 dark:text-slate-400">
                     @mywebsite
                 </div>
             </div>
@@ -82,12 +74,6 @@ const loadingFlag=ref(false)
 </template>
 
 <style scoped>
-form {
-    width: 100vw;
-    height: 90vh;
-    padding-top: 50px;
-}
-
 form label {
     position: absolute;
     top: 7px;
@@ -104,104 +90,8 @@ form label span {
     transition: all 0.3s ease;
 }
 
-h2 {
-    font-size: 1.5rem;
-    font-weight: 400;
-    line-height: 1.334;
-    letter-spacing: 0em;
-}
-
-.container-root {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-}
-
-.layout {
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    height: 90vh;
-    align-items: center;
-    overflow: hidden;
-}
-
-.item {
-    width: inherit;
-}
-
-.title {
-    margin-bottom: 30px;
-    margin-top: 50px;
-}
-
-.title .icon {
-    margin-left: 7px;
-    background-color: rgb(220, 0, 78);
-    font-size: 1.5rem;
-}
-
 .container {
-    width: 400px;
-    height: 400px;
-    overflow: hidden;
-    position: relative;
-    margin-top: -10px;
     --color: rgb(25, 118, 210)
-}
-
-.container .user {
-    margin-top: 20px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: inherit;
-    height: 4rem;
-}
-
-.container .password {
-    position: absolute;
-    width: inherit;
-    height: auto;
-    left: 0;
-    margin-top: 110px;
-    /* height: 4rem; */
-}
-
-.container .password .passIcon {
-    position: absolute;
-    right: 10px;
-    cursor: pointer;
-    background-color: inherit;
-}
-
-.container .input {
-    width: 370px;
-    font: inherit;
-    border: 0;
-    height: 3rem;
-    border: none;
-    padding-top: 1rem;
-    /* border-bottom: 0.1rem solid #CDD0D6; */
-    outline: none;
-    letter-spacing: 1px;
-    padding-bottom: 16px;
-    padding-left: 3px;
-}
-
-.submit {
-    position: absolute;
-    top: 180px;
-    width: inherit;
-}
-
-.submit button {
-    width: inherit;
-    height: 46px;
 }
 
 .container label::after {
@@ -216,8 +106,6 @@ h2 {
     transition: transform 0.3s ease;
 }
 
-
-
 form .input:focus+label span,
 form .input:valid+label span {
     transform: translateY(-120%);
@@ -230,12 +118,10 @@ form .input:valid+label::after {
     transform: translateX(0);
 }
 
-/* 用于Webkit内核 */
 input[type="password"]::-webkit-credentials-cramble-button {
     appearance: none;
 }
 
-/* Microsoft Edge浏览器 */
 input[type="password"]::-ms-reveal {
     display: none;
 }
@@ -243,12 +129,15 @@ input[type="password"]::-ms-reveal {
 input[type="password"]::-ms-clear {
     display: none;
 }
-
-
 </style>
 <style>
 .el-form-item__content {
     background-color: #fff;
     border-bottom: 0.1rem solid #CDD0D6;
+}
+
+.dark .el-form-item__content {
+    background-color: #0f172a;
+    border-bottom-color: #334155;
 }
 </style>

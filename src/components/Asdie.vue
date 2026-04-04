@@ -1,6 +1,12 @@
 <template>
-  <el-menu default-active="2" :collapse="isCollapse" background-color="var(--vt-c-blue)" :router="true" :mode=mode>
-    <el-menu-item index="/layout">
+  <el-menu
+    default-active="2"
+    :collapse="isCollapse"
+    :router="true"
+    :mode="mode"
+    class="h-full border-r-0 bg-sky-700 text-slate-100 dark:bg-slate-900 dark:text-slate-100"
+  >
+    <el-menu-item index="/layout" class="!text-inherit">
       <el-icon>
         <UserFilled />
       </el-icon>
@@ -72,9 +78,5 @@ const mode = computed(() => useCollapse.rowOrCol)
 .el-sub-menu__title,
 .el-menu-item {
   --el-menu-hover-bg-color: #275880;
-}
-
-.el-menu {
-  border-right: 0;
 }
 </style>
