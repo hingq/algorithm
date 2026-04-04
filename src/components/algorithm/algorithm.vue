@@ -1,8 +1,10 @@
 <script setup>
 // import { init } from '@/util/canvs';
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import { useObserve } from '@/util/useObserve'
 
+
+let cleanupObserve = () => {}
 
 const init_func = () => {
     // const canvas_ = document.querySelector('#canvas_container canvas')
@@ -25,8 +27,13 @@ const scrollToEnd = function (node) {
 onMounted(() => {
     init_func()
     const des = document.querySelector('#describle .des-body')
-    useObserve(des, () => scrollToEnd(des))
+    // 该观察器用于在描述面板内容变更时自动滚动到底部
+    cleanupObserve = useObserve(des, () => scrollToEnd(des))
     
+})
+
+onBeforeUnmount(() => {
+    cleanupObserve()
 })
 </script>
 

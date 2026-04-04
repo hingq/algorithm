@@ -1,19 +1,19 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup>
-import { useCollapse } from '@/stores';
-import { useTheme } from '@/stores/theme';
+import { useCollaspeStore, useTheme } from '@/stores';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router=useRouter()
 const span_collapse = ref('')
 const theme=useTheme()
+const collapseStore = useCollaspeStore()
 let flag=true
 //展开与折叠
 const collapse = () => {
     if(flag===true){
-        console.log(useCollapse);
-        useCollapse.change() //展开与折叠
+        console.log(collapseStore);
+        collapseStore.change() //展开与折叠
     }
 }
 //改变mode
@@ -24,10 +24,10 @@ const changeMode = async () => {
     }, 1000)
     props.el_con.$el.style.flexDirection = props.el_con.$el.style.flexDirection === `column` ? `row` : `column`
    
-    useCollapse.changeRow() //改变菜单模式
-    useCollapse.change(false)
+    collapseStore.changeRow() //改变菜单模式
+    collapseStore.change(false)
     var span=span_collapse.value
-    if (useCollapse.rowOrCol === 'horizontal') {
+    if (collapseStore.rowOrCol === 'horizontal') {
         span.style.cursor=` not-allowed`
         flag=false
     } else {

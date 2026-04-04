@@ -3,10 +3,11 @@ import { useRoute } from 'vue-router'
 import { import_ as getFunc } from '@/components/algorithm/async_import'
 import algorithm from './algorithm.vue'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { init } from '@/util/canvs'
+import { createCanvasAnimator } from '@/util/canvs'
 
 const algor = ref('')
 const route = useRoute()
+const animator = createCanvasAnimator()
 
 let iterSingle = null
 let iterBatch = null
@@ -19,8 +20,8 @@ let resetToken = 0
 let unmounted = false
 
 const createIteratorSet = (algorFunc) => {
-  iterSingle = algorFunc([...baseData])
-  iterBatch = algorFunc([...baseData])
+  iterSingle = algorFunc([...baseData], animator)
+  iterBatch = algorFunc([...baseData], animator)
 }
 
 const bootstrap = async () => {
@@ -67,7 +68,7 @@ const resetFunc = async () => {
 
   const el = algor.value?.$el?.querySelector('#canvas_container canvas')
   if (el) {
-    init(el, { data: [...baseData] })
+    animator.init(el, { data: [...baseData] })
   }
 }
 
@@ -86,6 +87,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   unmounted = true
   resetToken++
+  animator.dispose()
 })
 </script>
 

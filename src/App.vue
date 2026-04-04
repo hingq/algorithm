@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted } from 'vue';
 import { RouterView } from 'vue-router'
-import { theme } from './stores';
+import { useTheme } from './stores';
+const theme = useTheme()
 onMounted(() => {
   theme.getTheme()
 })
@@ -22,5 +23,4 @@ onMounted(() => {
   </header> -->
   <RouterView />
 </template>
-
 
