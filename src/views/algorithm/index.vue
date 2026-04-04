@@ -1,9 +1,8 @@
 <script setup>
 import router from '@/router';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Sort, Search, Share, Top, Download, Operation, DataAnalysis, Histogram, CollectionTag, Pointer, Tickets, Menu, Close } from '@element-plus/icons-vue'
-let openBtn = null
-let closeBtn = null
+const navVisible = ref(false)
 let prevBodyOverflow = ''
 
 const setBodyScrollLock = (isLocked) => {
@@ -15,31 +14,33 @@ const setBodyScrollLock = (isLocked) => {
     document.body.style.overflow = prevBodyOverflow
 }
 
-const handleOpen = () => openList()
-const handleClose = () => closeList()
+const closeList = () => {
+    navVisible.value = false
+}
+
+const openList = () => {
+    navVisible.value = true
+}
+
+const handleEscClose = (event) => {
+    if (event.key === 'Escape') {
+        closeList()
+    }
+}
+
+watch(navVisible, (isVisible) => {
+    setBodyScrollLock(isVisible)
+})
 
 onMounted(() => {
-    openBtn = document.querySelector('.open-btn')
-    closeBtn = document.querySelector('.close-btn')
-    openBtn?.addEventListener('click', handleOpen)
-    closeBtn?.addEventListener('click', handleClose)
+    window.addEventListener('keydown', handleEscClose)
 })
 
 onBeforeUnmount(() => {
-    openBtn?.removeEventListener('click', handleOpen)
-    closeBtn?.removeEventListener('click', handleClose)
+    window.removeEventListener('keydown', handleEscClose)
     setBodyScrollLock(false)
 })
-const closeList = () => {
-    const nav = document.querySelectorAll('.nav')
-    nav.forEach(nav_el => nav_el.classList.remove('visible'))
-    setBodyScrollLock(false)
-}
-const openList = () => {
-    const nav = document.querySelectorAll('.nav')
-    nav.forEach(nav_el => nav_el.classList.add('visible'))
-    setBodyScrollLock(true)
-}
+
 const toUrl = (key, url) => {
     router.push({
         path: `/algorithm/${key}`,
@@ -52,13 +53,14 @@ const toUrl = (key, url) => {
 
 <template>
     <div class="algorithm-layout">
-        <button class="nav-btn open-btn" aria-label="打开导航">
+        <button class="nav-btn open-btn" aria-label="打开导航" :aria-expanded="navVisible" aria-controls="algorithm-nav" @click="openList">
             <el-icon><Menu /></el-icon>
         </button>
-        <div class=" nav nav-black">
-            <div class="nav nav-red">
-                <div class="nav nav-white">
-                    <button class="nav-btn close-btn" aria-label="关闭导航">
+        <div v-show="navVisible" class="nav-mask" aria-hidden="true" @click="closeList"></div>
+        <div id="algorithm-nav" class="nav nav-black" :class="{ visible: navVisible }" role="dialog" aria-modal="true">
+            <div class="nav nav-red" :class="{ visible: navVisible }">
+                <div class="nav nav-white" :class="{ visible: navVisible }">
+                    <button class="nav-btn close-btn" aria-label="关闭导航" :aria-expanded="navVisible" aria-controls="algorithm-nav" @click="closeList">
                         <el-icon><Close /></el-icon>
                     </button>
                     <div class="side">
@@ -144,6 +146,13 @@ const toUrl = (key, url) => {
     overflow: auto;
     z-index: var(--algorithm-nav-z);
     pointer-events: none;
+}
+
+.nav-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: calc(var(--algorithm-nav-z) - 1);
 }
 
 .nav .link {
