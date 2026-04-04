@@ -62,10 +62,12 @@ import {
   Tickets,
   UserFilled,
 } from '@element-plus/icons-vue'
-import { useCollapse } from '@/stores'
+import { useCollaspeStore } from '@/stores'
 
-const isCollapse = computed(() => useCollapse.iscollaspe)
-const mode = computed(() => useCollapse.rowOrCol)
+const collapseStore = useCollaspeStore()
+
+const isCollapse = computed(() => collapseStore.iscollaspe)
+const mode = computed(() => collapseStore.rowOrCol)
 </script>
 
 <style scoped>
