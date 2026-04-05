@@ -46,8 +46,20 @@
   --color-table-background:var(--vt-c-table-background);
   --color-table-background-hover:#fff;
   --color-classTable:#DEEDF7;
-  --c0lor-class-border:#ddd;
-  --color-class-background:'#94aef3',
+  --color-class-border:#ddd;
+  --color-class-background:#94aef3;
+}
+
+html.dark {
+  --color-text: #E5EAF3;
+  --color-background: var(--vt-c-black);
+  --color-borderColor: #5e6269;
+  --color-card: rgb(43 66 89 / 90%);
+  --color-table-background: #1d1e1f;
+  --color-table-background-hover: #224364;
+  --color-classTable: var(--color-card);
+  --color-class-border: #5e6269;
+  --color-class-background: #2b4259;
 }
 
 *,

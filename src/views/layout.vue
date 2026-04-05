@@ -1,12 +1,14 @@
 <script setup>
 import Asdie from '@/components/Asdie.vue';
 import Header from '@/components/Header.vue'
-import { pageHeader } from '@/stores';
+// import { usePageHeader } from '@/stores/pageHeader';
+import { usePageHeader } from '@/stores';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
+const pageHeaderStore = usePageHeader()
 const title = computed(() => {
-    return pageHeader.pageHeader
+    return pageHeaderStore.pageHeader
 })
 const backEvent = () => {
     router.go(-1)
@@ -57,4 +59,5 @@ const el_container = ref(null)
     font-size: 18px;
     font-weight: 500;
 }
+
 </style>

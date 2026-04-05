@@ -14,3 +14,5 @@ export const usePageHeader=defineStore('header',()=>{
         pageHeader,setPage
     }
 })
+
+export const usePageHeaderStore = usePageHeader

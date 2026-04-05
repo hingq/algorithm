@@ -1,6 +1,6 @@
 
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-import { pageHeader } from '@/stores'
+import { usePageHeaderStore } from '@/stores/pageHeader'
 const isGitHubPages = Boolean(import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/')
 
 const router = createRouter({
@@ -94,7 +94,8 @@ const router = createRouter({
   ]
 })
 router.beforeEach( async(to,_,next)=>{
-  pageHeader.setPage(to)
+  const pageHeaderStore = usePageHeaderStore()
+  pageHeaderStore.setPage(to)
   next()
 })
 export default router

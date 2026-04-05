@@ -1,17 +1,19 @@
 <!-- eslint-disable vue/no-mutating-props -->
 
 <script setup>
-import { useCollapse } from '@/stores';
-import { useTheme } from '@/stores/theme';
+import { useCollaspeStore, useTheme } from '@/stores';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const span_collapse = ref('')
-const theme = useTheme()
-let flag = true
+const theme=useTheme()
+const collapseStore = useCollaspeStore()
+let flag=true
+//展开与折叠
 const collapse = () => {
-    if (flag === true) {
-        useCollapse.change()
+    if(flag===true){
+        console.log(collapseStore);
+        collapseStore.change() //展开与折叠
     }
 }
 const changeMode = async () => {
@@ -19,14 +21,14 @@ const changeMode = async () => {
     setTimeout(() => {
         props.el_con.$el.classList.remove('an')
     }, 1000)
-    props.el_con.$el.style.flexDirection = props.el_con.$el.style.flexDirection === 'column' ? 'row' : 'column'
-
-    useCollapse.changeRow()
-    useCollapse.change(false)
-    const span = span_collapse.value
-    if (useCollapse.rowOrCol === 'horizontal') {
-        span.style.cursor = 'not-allowed'
-        flag = false
+    props.el_con.$el.style.flexDirection = props.el_con.$el.style.flexDirection === `column` ? `row` : `column`
+   
+    collapseStore.changeRow() //改变菜单模式
+    collapseStore.change(false)
+    var span=span_collapse.value
+    if (collapseStore.rowOrCol === 'horizontal') {
+        span.style.cursor=` not-allowed`
+        flag=false
     } else {
         span.style.cursor = 'pointer'
         flag = true
@@ -66,3 +68,20 @@ const toggle = () => {
         <el-button @click="toggle">toggle</el-button>
     </div>
 </template>
+
+
+<style scoped>
+.header {
+    width: auto;
+    height: auto;
+    border-bottom: 1px solid skyblue !important;
+}
+
+.icon {
+    position: relative;
+    bottom: -10px;
+    width: 38px;
+    margin-right: 7px;
+    cursor: pointer;
+}
+</style>
