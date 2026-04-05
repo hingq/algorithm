@@ -64,14 +64,13 @@ const toUrl = (key, url) => {
                     <button class="nav-btn close-btn" aria-label="关闭导航" :aria-expanded="navVisible" aria-controls="algorithm-nav" @click="closeList">
                         <el-icon><Close /></el-icon>
                     </button>
-                    <div class="side">
-                        <div class="link">
-                        </div>
-                        <el-collapse>
+                    <div class="side mt-12">
+                        <div class="link"></div>
+                        <el-collapse class="rounded-lg border border-slate-200 bg-white/90 p-2 dark:border-slate-700 dark:bg-slate-950/80">
                             <el-collapse-item name="1">
                                 <template #title>
                                     <el-icon><Sort /></el-icon>
-                                    <span class="collapse-title">排序</span>
+                                    <span class="ml-1">排序</span>
                                 </template>
                                 <div class="link">
                                     <span @click="toUrl('sort', 'buble')"><el-icon><Top /></el-icon>冒泡排序</span>
@@ -85,7 +84,7 @@ const toUrl = (key, url) => {
                             <el-collapse-item name="2">
                                 <template #title>
                                     <el-icon><Search /></el-icon>
-                                    <span class="collapse-title">查找</span>
+                                    <span class="ml-1">查找</span>
                                 </template>
                                 <div class="link">
                                     <span @click="toUrl('search', 'binary')"><el-icon><Pointer /></el-icon>折半查找</span>
@@ -95,21 +94,19 @@ const toUrl = (key, url) => {
                             <el-collapse-item name="3">
                                 <template #title>
                                     <el-icon><Share /></el-icon>
-                                    <span class="collapse-title">二叉树</span>
+                                    <span class="ml-1">二叉树</span>
                                 </template>
                                 <div class="link">
                                     <span @click="toUrl('binary', 'create')"><el-icon><Share /></el-icon>二叉搜索树</span>
                                 </div>
-                                <div>
-
-                                </div>
+                                <div></div>
                             </el-collapse-item>
                         </el-collapse>
                     </div>
                 </div>
             </div>
         </div>
-        <main class="algorithm-content">
+        <main class="algorithm-content relative z-[1] px-6 py-4">
             <router-view></router-view>
         </main>
     </div>
@@ -125,7 +122,6 @@ const toUrl = (key, url) => {
 
 .nav-btn {
     border: none;
-    background-color: transparent;
     cursor: pointer;
     font-size: 20px;
 }
@@ -234,25 +230,9 @@ const toUrl = (key, url) => {
     right: 30px;
 }
 
-.side {
-    margin-top: 50px;
-}
-
-.algorithm-content {
-    position: relative;
-    z-index: var(--algorithm-content-z);
-    padding: 16px 24px;
-}
-
-
-.collapse-title {
-    margin-left: 6px;
-}
-
 :deep(.el-collapse-item__header) {
     font-size: 16px !important;
     gap: 4px;
 }
 
 </style>
-<style></style>
